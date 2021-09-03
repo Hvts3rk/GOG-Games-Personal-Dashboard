@@ -30,7 +30,7 @@ with open("game_list", "r") as file:
     for game in tmp_game_list:
         game_list.append(game.replace("\n", ""))
 
-page = requests.get("https://gog-games.com/search/all/1/date/desc/any")
+page = requests.get("https://gog-games.com/")
 
 soup = BeautifulSoup(page.text, 'html.parser')
 
@@ -39,7 +39,7 @@ games = games_block.findAll(class_='title')
 last_update = games_block.findAll(class_='date')
 
 for idg, game in enumerate(games):
-    if game.next_sibling.text == "NEW":
+    if game.next_sibling.text == "NEW" and (" hours ago" in last_update[idg].text or " 1 day ago" in last_update[idg].text or " 2 days ago" in last_update[idg].text or " 3 days ago" in last_update[idg].text):
         new_games[game.text] = [game.next_sibling.text, last_update[idg].text.replace("\nLast Update: ",""), "POSSEDUTO" if game.text in game_list else "NON POSSEDUTO"]
     else:
         updated_games[game.text] = [game.next_sibling.text, last_update[idg].text.replace("\nLast Update: ",""), "POSSEDUTO" if game.text in game_list else "NON POSSEDUTO"]
