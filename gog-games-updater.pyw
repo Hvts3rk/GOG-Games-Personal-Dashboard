@@ -31,10 +31,6 @@ with open("game_list", "r") as file:
     for game in tmp_game_list:
         game_list.append(game.replace("\n", ""))
 
-##DEBUG
-#print(game_list)
-##
-
 page = requests.get("https://gog-games.com/")
 
 soup = BeautifulSoup(page.text, 'html.parser')
@@ -48,23 +44,14 @@ new_last_update = new_games_block.findAll(class_='date')
 updated_games_page = updated_games_block.findAll(class_='title')
 updated_last_update = updated_games_block.findAll(class_='date')
 
-##DEBUG
-#print(new_games)
-##
-
 for idg, game in enumerate(new_games_page):
-    if game.next_sibling.text == "NEW" and (" hours ago" in new_last_update[idg].text or " 1 day ago" in new_last_update[idg].text):
+    if " hours ago" in new_last_update[idg].text or " 1 day ago" in new_last_update[idg].text:
         new_games[game.text] = [game.next_sibling.text, new_last_update[idg].text.replace("\nLast Update: ",""), "POSSEDUTO" if game.text in game_list else "NON POSSEDUTO"]
-    '''else:
-        updated_games[game.text] = [game.next_sibling.text, last_update[idg].text.replace("\nLast Update: ",""), "POSSEDUTO" if game.text in game_list else "NON POSSEDUTO"]'''
-
+    
 for idg, game in enumerate(updated_games_page):
-    #if " hours ago" in updated_last_update[idg].text or " 1 day ago" in updated_last_update[idg].text or " 2 days ago" in updated_last_update[idg].text:
-    updated_games[game.text] = [game.next_sibling.text, updated_last_update[idg].text.replace("\nLast Update: ", ""),
+    if " hours ago" in updated_last_update[idg].text or " 1 day ago" in updated_last_update[idg].text or " 2 days ago" in updated_last_update[idg].text:
+        updated_games[game.text] = [game.next_sibling.text, updated_last_update[idg].text.replace("\nLast Update: ", ""),
                                     "POSSEDUTO" if game.text in game_list else "NON POSSEDUTO"]
-
-#print(updated_games)
-#exit(0)
 
 new_string = "#-#-#-#-#- NEW GAMES -#-#-#-#-#\n"
 print(new_string)
